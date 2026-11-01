@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>翼通智航 低空通用算力板卡设计 参考资料与文献</title>
+<style>
+:root{
+  --bg:#f7f8fa;--surface:#fff;--ink:#1f2937;--ink-2:#6b7280;--ink-3:#9ca3af;
+  --border:#e5e7eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:#2563eb}
+.wrap{max-width:860px;margin:0 auto;padding:36px 20px 56px}
+.head{margin-bottom:22px}
+h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.sub{font-size:14px;color:var(--ink-2)}
+/* 统计概览 */
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 20px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 18px;min-width:90px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:700;color:#1f2937;line-height:1.3}
+.stat span{font-size:12px;color:var(--ink-2)}
+/* 顶部目录 */
+.toc{position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0 10px;margin:0 -4px 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border)}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex-shrink:0;text-decoration:none;font-size:13.5px;color:var(--ink-2);background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:5px 14px}
+.toc a:hover{color:#2563eb;border-color:#2563eb}
+/* 分类区块 */
+.block{margin-bottom:34px;scroll-margin-top:60px}
+.block h2{font-size:17px;font-weight:700;margin-bottom:12px;padding-left:10px;border-left:3px solid #2563eb}
+.src{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 15px;margin-bottom:8px}
+.src .t{font-size:14px;line-height:1.7}
+.src .s{margin-top:3px;font-size:12.5px;color:var(--ink-3)}
+.src .s a{color:#2563eb;text-decoration:none;word-break:break-all}
+.src .s a:hover{text-decoration:underline}
+.paper{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 15px;margin-bottom:8px;font-size:14px;line-height:1.7}
+.paper .pn{font-weight:600}
+.paper .po{color:var(--ink-3);font-size:12.5px;margin-left:6px}
+.paper .pw{color:var(--ink-2)}
+.paper .lk{margin-left:8px;font-size:12.5px;text-decoration:none}
+.paper .lk:hover{text-decoration:underline}
+@media (max-width:600px){.wrap{padding:24px 14px 40px}h1{font-size:19px}.stat{min-width:72px;padding:8px 12px}.stat b{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>翼通智航 低空通用算力板卡设计</h1>
+    <div class="sub">参考资料与文献</div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <nav class="toc" id="toc"></nav>
+
+  <div id="content"></div>
+</div>
+
+<script>
+const DATA = {"evidence_ledger":[{"section":"一、市场数据","headers":["#","数字","来源","类型"],"rows":[["1","中国低空经济 2025 年 7151.2 亿元（+16.8%）","赛迪顾问《中国低空经济发展研究报告(2026)》，2026-10-14 发布（2025 实际值）","✅ 官方口径"],["2","注册无人机 328.7 万架（+51.0%）","中国民航局《2025年民航行业发展统计公报》 https://www.caac.gov.cn/XWZX/MHYW/202604/t20260417_230603.html","✅ 官方"],["3","2025年民用无人机整机总产值 1761 亿元；工业级 1259 亿(71.5%)、消费级 502 亿(28.5%)","《中国低空经济发展指数报告(2026)》，中科院地理科学与资源研究所牵头（王姣娥），第九届数字中国建设峰会发布","✅ 官方口径"],["4","全球无人机年出货约 800 万台","Counterpoint Research（2025）","✅ 第三方"],["5","全球无人机机载计算机市场 3.378 亿美元(2025)，CAGR 14.8%(2025–2032)","Market Glass, Inc.《Drone Onboard Computers》","✅ 第三方"],["6","【删除项】420万/680万套/+62%","无可靠来源（IIM 报告工厂，年份错位，62%=680/420硬凑）","❌ 已删"],["7","【删除项】2→6 TOPS","无来源，且与真实机载算力(15–157 TOPS)差一个数量级","❌ 已删"],["8","【删除项】60家/15家/CR5 47%降3pct","无来源（IIM 自相矛盾）","❌ 已删"]]},{"section":"二、法规（法定义务的核心支点）","headers":["#","条文","出处"],"rows":[["9","《无人驾驶航空器飞行管理暂行条例》第39条第3款：「设计者、生产者，应当确保无人驾驶航空器具备紧急避让、降落等应急处置功能」","国令第761号，2024-01-01施行。全文 https://www.gov.cn/zhengce/zhengceku/202306/content_6888800.htm"],["10","第32条(八)超视距避撞义务 / 第33条分级避让 / 第51条罚则","同上，条例全文"]]},{"section":"三、政策与标准","headers":["#","事项","出处"],"rows":[["11","湖南=全国首个全域低空空域管理改革试点拓展省份（2020-09-01 中央空管委办公室批复）","湖南省政府 https://www.hunan.gov.cn/hnszf/hnyw/sy/hnyw1/202205/t20220508_24466890.html"],["12","湘政办发〔2024〕20号《关于支持全省低空经济高质量发展的若干政策措施》","湖南省政府 https://www.hunan.gov.cn/hnszf/xxgk/wjk/szfbgt/202406/t20240618_33329751.html"],["13","T/CAS 1091—2025《低空物流无人机自主导航与感知避障要求》（自愿性团体标准，2025-07-14发布，中国标准化协会归口）","国家数字标准馆 https://www.ndls.org.cn/standard/detail/f1888252b77c5180c8889a21ead6073a"],["14","《湖南省通用航空条例》（全国首部全域低空空域管理改革配套地方性法规，2022-10-01施行）","省人大常委会公告第94号"],["15","GB 42590-2023《民用无人驾驶航空器系统安全要求》（强制国标，仅覆盖微型/轻型/小型，2024-06-01实施）","国标全文公开系统 openstd.samr.gov.cn"],["16","CCAR-92《民用无人驾驶航空器运行安全管理规则》§92.301（零部件随机取证）、§92.315(b)（禁止声明改装件适配已取证机型）","民航局 caac.gov.cn"],["17","GB/T 38924（环境试验）/ GB/T 38909（电磁兼容EMC）/ GB/T 4208（外壳防护IP）","国标全文公开系统 openstd.samr.gov.cn"]]},{"section":"四、竞品参数（均来自厂商官网/官方文档）","headers":["#","产品","关键参数","出处"],"rows":[["15","大疆 妙算3 (Manifold 3)","100 TOPS(稀疏INT8) / 33W / 120g / 锁DJI PSDK","developer.dji.com / enterprise.dji.com"],["16","海砥 飞控算力一体板(RK3588)","6 TOPS / 3.6W待机 / 325g / 兼容PX4","hardaus.com"],["17","阿木 Allspark 2 (Orin NX)","100 TOPS（Orin NX 16GB 稀疏 INT8；8GB 版 70 TOPS）/ 10–25W（NVIDIA 官方功耗模式）/ 188g / $2119（100T 标准版）","amovlab.top（Shopify JSON variant）+ nvidia.com Orin NX 规格"],["18","ModalAI VOXL 2","15 TOPS / 16g / $1399.99 / PX4官方支持","docs.px4.io / modalai.com"],["19","NVIDIA Orin Nano Super","67 TOPS / 7–25W / $399（2026-07 现价，原 $249）","nvidia.com"],["20","酷芯 AR9481","8 TOPS（3–4W 最大 / 1W 典型，无正式 datasheet）","artosyn.cn 官网（8T\"等效\"口径）+ EET-China 2024-05 发布会报道（功耗，CTO 沈泊发布）"],["21","极飞SuperX5 / 纵横CW-15 / 普宙S400","整机自研，算力不对外卖","xa.com / jouav.com / gdu-tech.com"]]},{"section":"五、本地实测（D6，2026-10-23 本机实测）","headers":["#","指标","实测值","方法"],"rows":[["22","点云规模","779,103 点","公开建筑立面点云数据集"],["23","场景尺度","24.9 × 20.45 米","点云包围盒"],["24","栅格分辨率","70×50 格，每格 0.36×0.42 米（24.90/69×20.45/49），体素 0.1 米","pointcloud_map.py"],["25","障碍占比","20.4%","占据栅格统计"],["26","A* 路径","119 格（等效约 46 米），绕开全部障碍","astar.py"],["27","单次规划耗时","2.60 ms median（纯 CPU，50 次，多次复跑 2.57~2.61 ms；2026-10-24 复跑）","本机实测，脚本 measure_median.py"],["28","3D 体素避障路径","满跨悬空横梁 2D 无解→3D 从下方穿过 16.33 m；留缝横梁 2D 绕远 32.40 m→3D 直穿 16.33 m（缩短约 50%）；真实街景 3D 29.63 m（2D 39.00 m）","avoidance_3d/verify_3d.py + verify_3d_results.md（2026-10-30 实测）"],["29","3D 规划耗时","横梁场景 6.0–7.0 ms；真实街景 531.3 ms（纯 CPU 原型，非板载实时性）","同上"],["30","细杆（电线级）检出","合成检出率 1.0、误检 0（3 种子 15/15）；RANSAC 圆柱拟合","geometric_prior/eval_rod_detection.py（2026-10-29 实测）"],["31","感知—规划连通","稀疏电线 F0 纯体素碰撞（0.000 m）→F1 细杆检出无碰撞（0.141 m），路径 9.00→9.17 m（+1.9%），感知开销 99.6 ms","avoidance_3d/perception_integration.py + results（2026-10-30 实测）"]]},{"section":"六、诚实边界（禁写项，防幻觉）","headers":["禁写表述","原因","正确表述"],"rows":[["林下自主避障/真机飞行验证","本机无证据，团队上游文档明令禁止","「算法仿真验证（真实点云，非真机）」"],["专利/软著已授权","当前空白","「规划启动阶段，尚未授权」"],["T/CAS 1091 合规刚需","团体标准=自愿性","「自愿性对标先发；法定义务在761号令第39条」"],["10–30 TOPS 市场空白（绝对化）","与 VOXL 2(15T) 矛盾","「国产自主可控+宽温机载化+PX4双栈原生 的交叉空白」"]]},{"section":"七、上游技术红线（团队口径核对，2026-10-23）","headers":["#","红线","依据","草稿是否踩线"],"rows":[["1","只许说「二维俯视投影层面的原理验证」，禁「三维空间避障」","上游文档「❌三维空间避障（当前是2D投影，未做3D）」","🔄 已突破（2026-10-30：3D 体素避障已实测验证，见 §五 #28-31；现允许「三维体素层面的离线规划仿真（非真机）」，仍禁「真机三维避障」）"],["2","禁「实时避障/响应时间」——A* 2.60ms 是离线求解耗时，非机载实时性","红线「❌实时避障」「不报未验证响应时间」","已修正（不再挂钩机载实时）"],["3","禁「成功率/避障精度」——全库无任何评测数据","红线「❌未验证指标（成功率、响应时间、避障精度）」","✅ 未写"],["4","点云是厦门车载激光雷达公开数据集，非团队自采/非无人机航测","上游文档「不是自己采的」","✅ 已写「公开数据集」"],["5","禁「真实点云上 A* 优于 APF」——已被团队实测证伪（APF 4 组参数全到达）","待办_暂缓项 C1「已实测证伪」","✅ 未写 APF 对比"],["6","「算力板卡/RK3588/PX4/ArduPilot」在团队上游文档零依据，禁写「已实现/已部署」","上游文档检索 0 命中；Jetson「未见实物」","✅ 草稿写「设计目标」非「已实现」"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.1 竞品参数（新增 4 竞品 + 海砥温度补全）","headers":["#","产品","关键参数","出处"],"rows":[["28","航电创新 USX51（地瓜 RDK X5 底座）","10 TOPS / 8.7W / 170g / -20~60℃ / PX4+ArduPilot 双固件 / $699.99（促销，原 $999.99）","utmtek.com / utmsys.org"],["29","华为昇腾 Atlas 200I A2","20 TOPS / 25W / 80g / 官方称\"可集成于无人机\"","e.huawei.com/cn/products/computing/ascend/atlas-200-ai"],["30","Firefly Core-1688JD4（算能 BM1688）","16 TOPS / $339 / -20~60℃ / 国产 SoC 已量产核心板（非无人机成品）","t-firefly.com/products/core-1688jd4-core-board"],["31","九天展翼 AcroPi V2（RK3588）","6 TOPS / 120g / 0-50℃ 非宽温","9tzy.cn/pages/PCB/html/AcropiV2.html"],["32","海砥 fly3588 温度补全","6 TOPS / 3.6W 待机 / 325g / -20~+60℃ / 兼容 PX4 🔶（厂商宣称，型号\"fly3588\"未获第三方验证；RK3588 的 6 TOPS 为芯片级公开参数，其余整机参数不作已核实）","hardaus.com 🔶 待核实"],["54","爱芯 AX650N 算力口径","10.8 TOPS@INT8（2023 发布口径）/ 18 TOPS@INT8（后续更新口径）/ 43.2 TOPS 为 INT4（早期发布，非 INT8）/ INT4 最新 72 TOPS 🔶（多口径并存，以爱芯官网产品页最新规格书为准；\"PSA 认证稿\"不是算力出处，已删）","axera-tech.com"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.2 Tier-2 背书（§4.1）","headers":["#","对象","关键数据","出处"],"rows":[["33","ModalAI（美国）","1000+ design wins / DoD 合同 >$35M / VOXL2 $1399.99 / 具名客户 RDARS","modalai.com/pages/about-us"],["34","Auterion（瑞士创立 / 美国总部 Arlington VA）","PX4 商业发行版 + 企业级软件栈 ✅（可验证，官方原文\"commercial software distribution of the PX4 kernel\"）；$130M B轮（Bessemer 领投）/ 估值 $600M+ / 收入约 $100M / Rheinmetall 入股 🔶 据公开报道，待补稳定出处","auterion.com/bringing-px4-to-enterprise-users/ ✅"],["35","CUAV 雷迅创新（中国）","国家级高新技术企业 + 广东省专精特新 / 40 余项专利 + 28 软著 / 60% 国内客户自述","cuav.net/about-us/"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.3 收入结构参照（§4.2）","headers":["#","对象","关键数据","出处"],"rows":[["36","Auterion Suite 订阅","Pro $49 / Enterprise $99（载具/月，2026-10 取价）；RTK 授权 $1425/载具/年 🔶 待核实","auterion.com/product/suite/ ✅（另 2024-08 官方 PDF 载 Pro $77/$95，两口径不一致，引用须带日期）"],["37","CUAVCloud 云平台","¥27,999–69,999/年（硬件 + 订阅 + 私有部署）","CUAV 产品画册 V25.1.0 PDF（store.cuav.net）"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.4 市场第二来源（§4.2，2025 年机载计算机市场多源交叉）","headers":["#","机构","规模 / CAGR","出处"],"rows":[["38","Reanin","$381.29M / 13.0%","reanin.com/reports/drone-onboard-computer-market"],["39","ReportPrime","$334.86M / 9.79%","reportprime.com/drone-onboard-computer-r1018"],["40","Insight Partners","$388.92M / 11.41%","theinsightpartners.com/reports/drone-onboard-computer-market"],["41","GII","$200M / 14.3%","gii.co.jp/report/gis2108123-drone-onboard-computer-market-analysis-forecast.html"],["42","360iResearch","CAGR 13.45% 🔶（方法论 excludes market sizing，基数未印）","360iresearch.com/library/intelligence/drone-onboard-computer"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.5 政策红利（§4.2，均可查政府原文）","headers":["#","政策","内容","出处"],"rows":[["43","湘政办发〔2024〕20号","重大低空项目最高 2000 万（有效至 2027-06-30）","gxt.hunan.gov.cn（同原台账 #12）"],["44","湘发改基础规〔2024〕1038号","航线补贴 10 万/条 + 30 万拟支持项目公示","fgw.hunan.gov.cn"],["45","深圳深交规〔2025〕10号","载人 eVTOL 1500 万 / 大型 500 万 / 中型 300 万","sz.gov.cn/zfgb/2025/gb1387"],["46","四川川发改基础〔2025〕177号","关键载荷按投入 30% 最高 2000 万","fgw.sc.gov.cn"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.6 合规路径（§3.1）","headers":["#","事项","出处"],"rows":[["47","GB 20256750-Q-339《民用无人驾驶航空器感知与避障要求》强制性国标（在研，2025-12-22 下达）","std.samr.gov.cn"],["48","《限用类无人驾驶航空器系统适航标准》CAAC 新 AC（2026-02-12 生效，替代 AC-92-AA-2024-02）","caac.gov.cn"],["49","T/CQRA 004-2025《民用低空无人驾驶航空器避障体系》（2025-03-20）","ndls.org.cn"]]},{"section":"八、窗口3 边界探索并入条目（2026-10-24，均带一手 URL）｜8.7 属地背书 + 本地技术资产","headers":["#","事项","内容","出处"],"rows":[["50","湖南科技大学属地背书","低空技术产业研究院（2025-12-03 与武大+昭泰中帆签约）/ 省测绘学会低空工委会依托单位 / 低空技术与工程博士点","news.hnust.edu.cn"]]}]};
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function stripMarks(s){return s.replace(/[✅🔶⚠️⚠❌✓✗✔✖★☆→←↑↓·•◦●○◆◇]/g,'').replace(/\s{2,}/g,' ').trim();}
+function linkify(e){return e.replace(/((?:https?:\/\/)?(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+(?:com|cn|org|net|gov|edu|io|jp)(?:\.cn)?(?:\/[\w\-./?%&=#]*)?)/g,function(m){var u=m;if(!/^https?:\/\//.test(u))u='https://'+u;return '<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+m+'</a>';});}
+function cell(s){return linkify(esc(stripMarks(s)));}
+
+function isDeleted(row){
+  return row.some(function(c){var v=String(c||'');return v.indexOf('已删')>=0||v.indexOf('删除项')>=0||v.indexOf('无可靠来源')>=0;});
+}
+function locate(headers,row){
+  var content='',source='';
+  for(var i=0;i<Math.min(headers.length,row.length);i++){
+    var h=String(headers[i]||'').trim();
+    var v=String(row[i]||'').trim();
+    if(!v)continue;
+    if(h==='#'||h==='＃')continue;
+    if(h.indexOf('类型')>=0)continue;
+    if(h.indexOf('来源')>=0||h.indexOf('出处')>=0||h.indexOf('方法')>=0||h.indexOf('依据')>=0){
+      source=v;
+    }else{
+      content+=(content?'，':'')+v;
+    }
+  }
+  return {content:content,source:source};
+}
+
+var SECTIONS = [["一、市场数据", "市场数据", "#2563eb"], ["二、法规", "法规", "#16a34a"], ["三、政策与标准", "政策与标准", "#ea580c"], ["四、竞品参数", "竞品参数", "#7c3aed"], ["八、窗口3", "其他", "#6b7280"]];
+var PAPERS = [["SkyShield：低空 UAV 3D 占据防撞", "厦门大学", "单目 RGB 视锥内 3D 语义占据", "https://arxiv.org/abs/2606.00747"], ["UNSEEN：纯视觉无人机全链路不确定性导航", "特伦托大学", "V-SLAM、概率占据栅格、RRT* 滚动规划", "https://arxiv.org/abs/2606.20755"], ["OKVIS2-X：多传感器 SLAM 统一框架", "", "关键帧因子图统一视觉、IMU、LiDAR、GNSS", "https://arxiv.org/abs/2510.04612"], ["MIGHTY：无人机轨迹规划器", "MIT、宾大", "五次 Hermite 样条轨迹优化，IEEE RA-L", "https://github.com/mit-acl/mighty"], ["CSF：LiDAR 点云地面分割", "中山大学、帝国理工", "布料模拟滤波，Remote Sensing 2016", "https://www.mdpi.com/2072-4292/8/3/140"], ["LidarVerse：实时统一 LiDAR 世界模型", "NVIDIA", "统一 tokenizer、双向教师、自回归学生", "https://arxiv.org/abs/2610.19201"], ["PointEvent：事件相机反无人机微小目标检测", "南京理工、厦大", "事件相机加序列化运动证据累积", "https://arxiv.org/abs/2609.20066"], ["Bee-Nav：仿生蜜蜂归航导航", "代尔夫特理工", "不建图、不用 GPS 的视觉归航，Nature", "https://www.nature.com/articles/s41586-026-10461-3"], ["FARM：关系型空间记忆", "Berkeley、Stanford", "物体级空间记忆加自然语言检索导航", "https://arxiv.org/abs/2606.15476"], ["DynamicVGGT：动态 4D 重建", "", "VGGT 扩展，CVPR 2026", "https://arxiv.org/abs/2603.08254"], ["SkyJEPA：零样本 Sim2Real 控制世界模型", "UC Berkeley、NYU、Brown", "JEPA 潜空间动力学加 MPPI 控制", "https://arxiv.org/abs/2606.23444"], ["PS-LOS：长距离反无人机拦截", "北航", "ICRA 2026 最佳论文", "https://arxiv.org/abs/2606.10639"], ["ego-planner：ESDF-free 局部规划器", "HKUST/ZJU FAST Lab", "B 样条加碰撞梯度推离障碍", "https://arxiv.org/abs/2008.06532"], ["MINCO：轨迹优化体系", "高飞", "分段多项式时空联合优化", "https://arxiv.org/abs/2103.00190"]];
+
+function build(){
+  var srcTotal=0;
+  var html='';
+  var tocHtml='';
+
+  SECTIONS.forEach(function(sec,idx){
+    var prefix=sec[0], title=sec[1], color=sec[2];
+    var led = DATA.evidence_ledger.filter(function(e){return e.section.indexOf(prefix)===0;});
+    if(led.length===0)return;
+    var items='';
+    var count=0;
+    led.forEach(function(e){
+      (e.rows||[]).forEach(function(r){
+        if(isDeleted(r))return;
+        var lo=locate(e.headers||[],r);
+        if(!lo.content)return;
+        items+='<div class="src"><div class="t">'+cell(lo.content)+'</div>';
+        if(lo.source)items+='<div class="s">'+cell(lo.source)+'</div>';
+        items+='</div>';
+        count++;
+      });
+    });
+    if(items){
+      html+='<div class="block" id="sec-'+idx+'"><h2 style="border-left-color:'+color+'">'+esc(title)+'</h2>'+items+'</div>';
+      tocHtml+='<a href="#sec-'+idx+'">'+esc(title)+'</a>';
+      srcTotal+=count;
+    }
+  });
+
+  html+='<div class="block" id="sec-paper"><h2 style="border-left-color:#1d4ed8">论文与文献</h2>';
+  PAPERS.forEach(function(p){
+    var name=p[0], org=p[1], desc=p[2], link=p[3];
+    html+='<div class="paper"><span class="pn">'+esc(name)+'</span>'+(org?'<span class="po">'+esc(org)+'</span>':'')+' <span class="pw">'+esc(desc)+'</span>'+(link?' <a class="lk" href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">'+esc(link.replace(/^https?:\/\//,''))+'</a>':'')+'</div>';
+  });
+  html+='</div>';
+  tocHtml+='<a href="#sec-paper">论文与文献</a>';
+
+  document.getElementById('toc').innerHTML=tocHtml;
+  document.getElementById('content').innerHTML=html;
+
+  var linkCount=document.querySelectorAll('#content a[href]').length;
+  var stats=[['5','类资料'],[String(srcTotal),'条资料'],[String(PAPERS.length),'篇论文'],[String(linkCount),'个链接']];
+  document.getElementById('stats').innerHTML=stats.map(function(s){return '<div class="stat"><b>'+s[0]+'</b><span>'+s[1]+'</span></div>';}).join('');
+}
+build();
+</script>
+</body>
+</html>
